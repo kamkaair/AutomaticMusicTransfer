@@ -1,8 +1,10 @@
 import requests
 import csv 
 import io
+import subprocess
 
-sheetsLink = "Link Here"  
+#sheetsLink = "Link Here"  
+#targetDir = "Working folder here"
 
 def requestInfo():
     response = requests.get(sheetsLink)
@@ -11,15 +13,22 @@ def requestInfo():
 
     return csv.reader(io.StringIO(response.text))
 
+def powerShellCommand(input):
+    #try:
+    power = subprocess.run(["yt-dlp", "-x", "--audio-format", "mp3", "--audio-quality", "0", "--cookies-from-browser", "firefox", input], cwd=targetDir)
+    #except:
+        #print("An Anomaly")
+
 def main(): # This feels quite weird not defining a main or data types
     reader = requestInfo() # Fetch the result from the servers and an iterator for em
     #print(type(reader))
     next(reader) # Skip the first row
     print("The links: ")
     #print(reader.line_num) # Gets the index of the current line
+    powerShellCommand("https://youtu.be/Oe3FG4EOgyU?si=wApHa_GHCfsyrffL")
 
-    for row in reader: # type() is class '_csv.reader'
-        print(row[0]) # Take the first item of the row only. The reader's items seem to be like a 2D array.
+    #for row in reader: # type() is class '_csv.reader'
+        #print(row[0]) # Take the first item of the row only. The reader's items seem to be like a 2D array.
 
 # Execute main
 main()
