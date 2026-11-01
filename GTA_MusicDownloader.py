@@ -2,8 +2,10 @@ import requests
 import csv 
 import io
 import subprocess
+import keyboard
+import time
 
-#sheetsLink = "Link Here"  
+#sheetsLink = "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/export?format=csv&gid=0"  
 #targetDir = "Working folder here"
 
 def requestInfo():
@@ -21,7 +23,7 @@ def isInvalidLink(input):
 def powerShellCommand(input):
     return subprocess.run(["yt-dlp", "-x", "--match-filter", "duration < 360", "--audio-format", "mp3", "--audio-quality", "0", "--cookies-from-browser", "firefox", input], cwd=targetDir)
 
-def main(): # This feels quite weird not defining a main or data types
+def update(): # This feels quite weird not defining a main or data types
     reader = requestInfo() # Fetch the result from the servers and an iterator for em
     next(reader) # Skip the first row
     print("Downloading links: ")
@@ -39,12 +41,21 @@ def main(): # This feels quite weird not defining a main or data types
         if(powerOut.returncode != 0):
             print("An Exception for: " + row[1] + " - " + row[0])
 
+    print('\n' + "Track update complete!")
+
+def mainMenu(): # Quite ugly input handling, but it'll do
+    timer = None
+    print("CONTROLS:\n shift+å = update\n shift+esc = exit")
+
+    while(True):
+        if(keyboard.is_pressed('shift+å')): # Update immediately
+            print("BEGIN: Update")
+            update()
+            time.sleep(0.3)
+      
+        elif(keyboard.is_pressed('shift+esc')): # exit program
+            print("Exiting...")
+            break
 
 # Execute main
-main()
-print('\n' + "Track update complete!")
-
-#playlist1 = "https://www.youtube.com/watch?v=ilqeDbu4E8Y&list=RDilqeDbu4E8Y&start_radio=1"
-#playlist2 = "https://www.youtube.com/watch?v=TYuhD-JuNLY&list=RDOe3FG4EOgyU&index=2"
-#notPlaylist = "https://youtu.be/TYuhD-JuNLY?si=de0LrCfovqhXJ149"
-#isPlayList(notPlaylist)
+mainMenu()
