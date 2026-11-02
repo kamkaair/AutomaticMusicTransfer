@@ -2,11 +2,14 @@ import requests
 import csv 
 import io
 import subprocess
-import keyboard
-import time
+import os
 
-#sheetsLink = "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/export?format=csv&gid=0"  
-#targetDir = "Working folder here"
+# Add Google Sheets spreadsheet ID here!
+sheetsLink = "https://docs.google.com/spreadsheets/d/SPREADSHEET_ID_HERE/export?format=csv&gid=0"  
+targetDir = os.path.expanduser('~\\Documents\\Rockstar Games\\GTA IV\\User Music')
+if(not os.path.isdir(targetDir)):
+    print("ERROR! Following directory does not exist: " + targetDir)
+    os._exit(0)
 
 def requestInfo():
     response = requests.get(sheetsLink)
@@ -26,7 +29,7 @@ def powerShellCommand(input):
 def update(): # This feels quite weird not defining a main or data types
     reader = requestInfo() # Fetch the result from the servers and an iterator for em
     next(reader) # Skip the first row
-    print("Downloading links: ")
+    print("Track update for the target directory: " + targetDir)
 
     for row in reader: # type() is class '_csv.reader'
         print('\n' + str(reader.line_num) + ": " + row[1] + '\n')
@@ -43,19 +46,5 @@ def update(): # This feels quite weird not defining a main or data types
 
     print('\n' + "Track update complete!")
 
-def mainMenu(): # Quite ugly input handling, but it'll do
-    timer = None
-    print("CONTROLS:\n shift+å = update\n shift+esc = exit")
-
-    while(True):
-        if(keyboard.is_pressed('shift+å')): # Update immediately
-            print("BEGIN: Update")
-            update()
-            time.sleep(0.3)
-      
-        elif(keyboard.is_pressed('shift+esc')): # exit program
-            print("Exiting...")
-            break
-
 # Execute main
-mainMenu()
+update()
